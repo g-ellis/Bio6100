@@ -2,9 +2,11 @@
 title: "index"
 author: "Gwen"
 date: "2024-01-24"
-output: html_document
+output: 
+  html_document: 
+    theme: cerulean
 ---
 
-This is the webpage for my Bio 6100 class 
+This is the webpage for my Bio 6100 class
 
-And here's a [link](newpage.html) to a new page!
+And here's a [link](newpage.html) to a new page for the second HW assignment!
