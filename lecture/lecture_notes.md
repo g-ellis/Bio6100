@@ -19,3 +19,4 @@ editor_options:
 01-24-2024
   - to clone repository from github, copy repo link, open new project in Rstudio, choose version control and paste url
   - rmarkdown:::site_skeleton(getwd()) in console use rmarkdown package and use site skeleton command to set up basic webpage version and make it using the current working directory (looks for an index file)s --> this will across create a yml file which is part of a basic site infrastructure
+  - for adding site to github, go to settings>pages within repository and deploy from branch, branch>main/master and save. It will take a few minutes and then should be live
