@@ -1,0 +1,94 @@
+---
+title: "class notes"
+author: "Gwen"
+date: "2024-01-25"
+output: 
+  html_document: 
+    highlight: textmate
+---
+
+```{r}
+# first chunk of code in rmd file
+print(pi)
+pi + 3
+
+```
+
+
+* `.Rmd` is Rstudio's special blend of Markdown (a text rendering language)
+* `.md` is the more generic Markdown file type. In Rstudio, the intermediae .md fileas are not (in the default state) preserved
+
+## Languages
+* `LaTex` Typesetting language invented in the 1970s by computer programmer Donald Knuth for proper rendering of text and equations. Hundres of commands. Precise, but somewhat complicated to use.
+* `Markdown` Greatly simplified version of LaTex with a small number of commands to master. Easy to use, texts look great.
+* `yaml`^2^ Header material for `.Rmd` files that can be changed manually or by selecting options
+* `R` Computer language for manipulating numbers, text, graphics, statistics
+
+## Basic text formatting
+* headers `#` to `######` *numbering from options
+* text
+* markup
+  * *italic* `*text*`
+  * **bold** `**text**`
+  * sub~script~ `~text~`
+  * super^script^ `^text^`
+  * ~~strikethrough~~ `~~text~~`
+  * "quotations"
+  
+## Spacing, manual breaks, lines
+* line spacing effects
+* two extra spaces at the end of a line for a manual break
+* lists
+  * indented
+  * numbered
+
+## Links
+* links [linking text](website address)
+* footnotes^2^
+* images
+
+## Tables
+
+
+## subscripts in LaTex
+$$H_0 = Z_{a + b}$$
+
+
+## superscripts in LaTex 
+
+$$S = cA^z$$
+
+$$S=cA^z_1 + Z_{2 + x}$$
+special characters proceeded with backslash
+
+$$\alpha = \frac{\beta}{\delta + \gamma_x}$$
+
+$$z = \sum_{i=1}^X{k}$$
+
+what if you need to include a backslash in the equation? There's a code for that
+
+$$\backslash \alpha \le b \backslash$$
+
+## Rendering in plain text
+
+$$P(Occurrence of Species A) = Z$$
+$$P(\mbox{Occurrence of Species A}) = Z$$
+
+easy to embed LaTex in line $\pi + 3$ like so
+we can also use markdown fencing in line with a single backtick `pi + 3` like this. We can even execute r code inside of markdown text `r pi + 3` << " r pi + 3 "
+
+## R code in chunks 
+
+```{r eval=TRUE, echo=TRUE}
+# use comments extensively in all of your coding!
+Pred <- seq(1,10) # make a vector of integers from 1 to 10
+Res <- runif(10) # generate 10 draws from a random uniform (0,1) distribution
+
+# print the random numbers
+print(Res)
+
+# plot the graph
+plot(x=Pred,y=Res,type="b")
+
+```
+
