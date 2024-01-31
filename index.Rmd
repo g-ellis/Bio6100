@@ -12,3 +12,5 @@ This is the webpage for my Bio 6100 class
 And here's a [link](newpage.html) to a new page for the second HW assignment!
 
 The third homework assignment can be found [here](Homework/Homework3.html)
+
+Testing linking to subdirectories, [click here!](Homework/Homework1.html)
