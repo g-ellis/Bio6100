@@ -43,3 +43,12 @@ editor_options:
   - to capture a certain part of a search, surround it with parentheses. Those captured parts can now be refered to in the search in numerical order left to right \1 \2 ...
   - custom character sets can be denoted by brackets [ ], these can also be used with quantifiers
     - to negate a character set, include an up carrot [^ ]
+    
+    
+02-01-2024
+   - atomic vector: 1 dimensional homogeneous data type
+    - ex: character strings, integers/doubles (numeric), logicals (true, false), factor, vector of lists
+   - matrix: 2 dimensional homogeneous data type
+   - array: n dimensional homogeneous data type
+   - list: 1 dimensional heterogeneous (multiple kinds of data) data type
+   - data frame: 2 dimensional heterogeneous data type
