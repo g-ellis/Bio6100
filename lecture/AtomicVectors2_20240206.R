@@ -82,5 +82,77 @@ str(long_vec)
 sample(x=long_vec) # without any other arguments, it returns the elements of the vector in a random order
 sample(x=long_vec, size=3) # specifying a size pulls that number of elements - no numbers will repeat unless the number is repeated in the vector
 sample(x=long_vec, size=11) # this will return an error since the vector length=10
-sample(x=long_vec, size=16, replace=TRUE) # can now generate duplicates (default is false)
+sample(x=long_vec, size=16, replace=TRUE) # can now generate duplicate elements (default is false)
+# by default, sampling pulls each element equally, but what if you want some elements more than others?
+my_weights <- c(rep(20,5),rep(100,5)) # vector with 20 repeated 5 times and 100 repeated 5 times
+print(my_weights)
+my_weights <- c(rep(c(20,100),each=5)) # could also make the vector this way
+print(my_weights)
+sample(x=long_vec, replace=TRUE, prob=my_weights) # by giving the prob argument a vector with the same number elements, you can add weights to the random sampling
+mean(sample(x=long_vec, size=100, replace=TRUE)) # Without weights, the mean is close to 5
+mean(sample(x=long_vec, size=100, replace=TRUE, prob=my_weights)) # now the mean is greater than 5
 
+
+## Techniques for subsetting atomic vectors
+z <- c(3.1,9.2,1.3,0.4,7.5)
+
+# positive index values
+z[c(2,3)]
+
+# negative index values to exclude elements
+z[-c(2,3)]
+
+# create a vector of elements based on given conditions, not on the basis of location in vector
+z[z<3]
+# the way this works is first coercing to a string of logical elements
+tester <- z<3
+print(tester)
+z[tester] # and then those logical elements are used to subset the vector
+
+# can also use which() to find specific elements
+which(z<3) # returns the positions that meet the criteria
+z[which(z<3)] # this will give the elements that fit the criteria
+
+z[-(length(z):(length(z)-2))] # go from end of vector and go down 2 elements, but then exclude those. Therefore, this returns just the first two elements of z/ remove the last 3 elements
+
+# can also subset using named vector elements
+names(z) <- letters[1:5] # add names to vector z, letters is a built in vector of a-z (LETTERS is A-Z)
+z[c("b","c")]
+
+
+## Relational operators in R
+# < less than
+# > greater than
+# <= less than or equal to
+# >= greater than or equal to
+# == equal to
+
+# ! not
+# & and (vector)
+## | or (vector)
+# xor(x,y) either x or y needs to be true
+
+x <- 1:5
+y <- c(1:3,7,7)
+x == 2 # returns logical for each element
+x != 2 # which elements do not equal 2?
+x == 1 & y == 7 # is there an element in the same position in each vector where it equals 1 in x and 7 in y
+# if one vector is longer than the other, it will start recycling elements from the shorter vector for comparison
+x == 1 | y == 7 # is there a position where it's 1 in x OR 7 in y
+x == 3 | y == 3 # [1] FALSE FALSE  TRUE FALSE FALSE
+xor(x==3, y==3) # [1] FALSE FALSE FALSE FALSE FALSE now false in the third position because they're both 3, not just one of them
+
+
+## subscripting with missing values
+set.seed(90)
+z <- runif(10)
+print(z)
+
+z < 0.5 # string of logicals
+z[z<0.5] # use logicals as an index call
+which(z<0.5) # positions for which the condition is true
+z[which(z<0.5)] # does same as the above
+
+zD <- c(z,NA,NA) # add missing values
+zD[zD<0.5] # NA values are still carried along
+zD[which(zD<0.5)] # using which() will not include the NA values

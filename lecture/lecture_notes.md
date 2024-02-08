@@ -52,3 +52,15 @@ editor_options:
    - array: n dimensional homogeneous data type
    - list: 1 dimensional heterogeneous (multiple kinds of data) data type
    - data frame: 2 dimensional heterogeneous data type
+   
+02-08-2024
+  - Relational operators in R
+    - < less than
+    - > greater than
+    - <= less than or equal to
+    - >= greater than or equal to
+    - == equal to
+    - ! not
+    - & and (vector)
+    - | or (vector)
+    - xor(x,y) either x or y needs to be true
