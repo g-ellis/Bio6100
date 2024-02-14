@@ -1,0 +1,67 @@
+---
+title: "Homework 5"
+author: "Gwen Ellis"
+date: "2024-02-14"
+output: html_document
+---
+
+## Question 1
+```{r}
+n_dims <- sample(seq(3:10), size=1) # random number of dimenions
+  
+vector <- seq(1:n_dims^2)
+
+mat <- matrix(sample(vector), nrow=n_dims)
+print(mat)
+
+print(t(mat)) # transpose the element and look at it
+
+mean(mat[1,])
+sum(mat[1,])
+mean(mat[2,])
+sum(mat[2,])
+
+mat_eigen <- eigen(mat) # returns a list with the elements "values" and "vectors"
+
+typeof(mat_eigen$values) # $values is type double
+typeof(mat_eigen$vectors) # $vectors is type double, but visually I can see that these numbers are within a matrix
+
+```
+
+## Question 2
+```{r}
+my_matrix <- matrix(data=runif(16), nrow=4)
+my_logical <- (runif(100) > .5)
+my_letters <- sample(letters[1:26])
+
+my_list <- list(my_matrix, my_logical, my_letters)
+
+new_list <- list(my_matrix[2,2], my_logical[2], my_letters[2])
+typeof(new_list[[1]])
+typeof(new_list[[2]])
+typeof(new_list[[3]])
+
+atomic <- c(new_list[[1]], new_list[[2]], new_list[[3]])
+typeof(atomic) # type is character
+
+```
+
+## Question 3
+```{r}
+# make a data frame
+df <- data.frame(my_unis=runif(26, min=0, max=10), my_letters=sample(LETTERS[1:26]))
+
+df[sample(length(df$my_unis),size=4),1]=NA # take the random rows and replace with NA only in the first column
+ 
+# identify which rows have my_unis = NA
+which(is.na(df$my_unis))
+
+# reorder df to be alphabetical
+df[order(df$my_letters),]
+ 
+# What is the mean of the first variable?
+mean(which(is.na(df$my_unis)==TRUE))
+
+
+```
+
