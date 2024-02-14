@@ -359,31 +359,37 @@ display: none;
 
 <div id="question-1" class="section level2">
 <h2>Question 1</h2>
-<pre class="r"><code>n_dims &lt;- sample(seq(3:10), size=1) # random number of dimenions
+<pre class="r"><code>n_dims &lt;- sample(seq(3:10), size=1) # random number of dimensions
   
 vector &lt;- seq(1:n_dims^2)
 
 mat &lt;- matrix(sample(vector), nrow=n_dims)
 print(mat)</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4]
-## [1,]   15    7   12    2
-## [2,]   16   11    5    4
-## [3,]    1    8    6    9
-## [4,]   14   13    3   10</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+## [1,]   44   47   19   13   28    3   39
+## [2,]   26   15   12   32   11   27   38
+## [3,]   45   21   42   43   22   35   33
+## [4,]   16    2    7   30    9   20    6
+## [5,]    8   29   25   36   18   17   46
+## [6,]   10    4    1   37   24   49   48
+## [7,]   41   14   34   31    5   40   23</code></pre>
 <pre class="r"><code>print(t(mat)) # transpose the element and look at it</code></pre>
-<pre><code>##      [,1] [,2] [,3] [,4]
-## [1,]   15   16    1   14
-## [2,]    7   11    8   13
-## [3,]   12    5    6    3
-## [4,]    2    4    9   10</code></pre>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6] [,7]
+## [1,]   44   26   45   16    8   10   41
+## [2,]   47   15   21    2   29    4   14
+## [3,]   19   12   42    7   25    1   34
+## [4,]   13   32   43   30   36   37   31
+## [5,]   28   11   22    9   18   24    5
+## [6,]    3   27   35   20   17   49   40
+## [7,]   39   38   33    6   46   48   23</code></pre>
 <pre class="r"><code>mean(mat[1,])</code></pre>
-<pre><code>## [1] 9</code></pre>
+<pre><code>## [1] 27.57143</code></pre>
 <pre class="r"><code>sum(mat[1,])</code></pre>
-<pre><code>## [1] 36</code></pre>
+<pre><code>## [1] 193</code></pre>
 <pre class="r"><code>mean(mat[2,])</code></pre>
-<pre><code>## [1] 9</code></pre>
+<pre><code>## [1] 23</code></pre>
 <pre class="r"><code>sum(mat[2,])</code></pre>
-<pre><code>## [1] 36</code></pre>
+<pre><code>## [1] 161</code></pre>
 <pre class="r"><code>mat_eigen &lt;- eigen(mat) # returns a list with the elements &quot;values&quot; and &quot;vectors&quot;
 
 typeof(mat_eigen$values) # $values is type double</code></pre>
@@ -419,39 +425,39 @@ df[sample(length(df$my_unis),size=4),1]=NA # take the random rows and replace wi
  
 # identify which rows have my_unis = NA
 which(is.na(df$my_unis))</code></pre>
-<pre><code>## [1]  3 11 15 25</code></pre>
+<pre><code>## [1]  3  8 22 23</code></pre>
 <pre class="r"><code># reorder df to be alphabetical
 df[order(df$my_letters),]</code></pre>
 <pre><code>##      my_unis my_letters
-## 9  9.8533761          A
-## 19 0.2063181          B
-## 10 1.6552665          C
-## 14 7.1432651          D
-## 1  7.1418092          E
-## 4  2.1330549          F
-## 26 6.0397948          G
-## 13 7.7643016          H
-## 2  3.9341921          I
-## 12 4.5354232          J
-## 15        NA          K
-## 23 0.9588230          L
-## 25        NA          M
-## 6  5.9378212          N
-## 3         NA          O
-## 20 0.1433792          P
-## 17 0.1818282          Q
-## 11        NA          R
-## 24 6.5996110          S
-## 22 2.5198378          T
-## 16 1.3292823          U
-## 7  4.1879127          V
-## 5  8.6724148          W
-## 21 7.6556891          X
-## 8  2.5959540          Y
-## 18 0.4434783          Z</code></pre>
+## 24 2.7133143          A
+## 12 1.4906009          B
+## 19 6.4287917          C
+## 17 5.3579046          D
+## 5  2.7103179          E
+## 8         NA          F
+## 13 1.3123442          G
+## 2  0.2124493          H
+## 14 4.8112179          I
+## 6  2.0075028          J
+## 3         NA          K
+## 26 9.2007178          L
+## 4  4.0115974          M
+## 23        NA          N
+## 10 9.9602077          O
+## 18 3.7524853          P
+## 1  1.2951689          Q
+## 11 4.8988104          R
+## 21 8.7022328          S
+## 22        NA          T
+## 15 8.3144317          U
+## 9  0.2489451          V
+## 16 3.0015951          W
+## 20 3.3904048          X
+## 25 0.8943649          Y
+## 7  8.1208814          Z</code></pre>
 <pre class="r"><code># What is the mean of the first variable?
 mean(which(is.na(df$my_unis)==TRUE))</code></pre>
-<pre><code>## [1] 13.5</code></pre>
+<pre><code>## [1] 14</code></pre>
 </div>
 
 
