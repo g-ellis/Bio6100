@@ -139,3 +139,73 @@ zdf["V2"] # does the same as above
 zdf$V2 # and the same again
 
 # eliminating missing values
+# use complete.cases() with atomic vectors
+print(zdf)
+zdf[2,2]<- NA
+complete.cases(zdf$V2) # returns logicals based on if there are actually values in each element position
+zdf$V2[complete.cases(zdf$V2)] # will keep only the values in the df that returned true from complete.cases
+which(!complete.cases(zdf$V2)) # find NA slots/row numbers
+
+# use with a matrix
+m <- matrix(1:20,nrow=5)
+m[1,1] <- NA
+m[5,4] <- NA
+print(m)
+
+m[complete.cases(m),] # take the matrix and subset to keep only the rows with no NA and all the columns
+
+# complete.cases for only certain columns
+m[complete.cases(m[,c(1,2)]),] # look at only the 1st and second columns of the matrix to perform complete.cases on for which rows to keep (eliminate rows with NA in column 1 or 2) 
+m[complete.cases(m[,c(2,3)]),] # no dropped rows
+m[complete.cases(m[,c(3,4)]),] # drops row 5
+m[complete.cases(m[,c(1,4)]),] # drops row 1 and 5
+
+
+## Techniques for assignments and subsetting matrices and dfs
+m <- matrix(1:12, nrow=3)
+# assign matrix row and column names with dimnames()
+# needs a list with 2 things: the row names and the column names
+dimnames(m) <- list(paste("Species",
+                          LETTERS[1:nrow(m)], # Species with a letter tacked on up to the number of rows
+                          sep=""),
+                    paste("Site",1:ncol(m),sep="")) # Site with a number tacked on up to the number of columns
+# can now use the dimension names to subset
+m["SpeciesA","Site1"]
+m[c("SpeciesA", "SpeciesB"), c("Site3", "Site4")]
+
+# use logicals for more complex subsetting
+
+# select all columns for which the total are >15
+colSums(m)
+colSums(m) > 15 # returns logicals for if the sum of each column is greater than 15
+m[,colSums(m)>15] # keep all the rows, but only keep the columns where the sum is greater than 15
+
+# select all the rows for which the row total is = 22
+m[rowSums(m)==22,] # keeps only the first row
+m[rowSums(m)!=22,] # don't keep the first row
+
+# choose all rows for which numbers for site1 are less than 3 AND choose all columns for which the numbers for speciesA are less than 5
+m[,"Site1"] <3 # what rows have less than 3 for Site1
+m["SpeciesA",] <5 # what columns have less than 5 for SpeciesA
+m[m[,"Site1"] <3, m["SpeciesA",] <5]
+
+# caution! simple subsetting to a vector changes the data type
+z <- m[1,]
+print(z)
+str(z) # now only one dimension, a vector
+
+z2 <- m[1, ,drop=FALSE] # maintains dimensionality
+print(z2)
+str(z2)
+
+# caution! always use both dimensions when subsetting, otherwise you'll just get a single element
+m2 <- matrix(data=runif(9), nrow=3)
+print(m2)
+m2[,2]
+m2[2,]
+m2[2]
+m2[2,1]
+
+# also use logicals for assigning values
+m2[m2>0.6] <- NA
+print(m2)
