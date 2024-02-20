@@ -64,3 +64,18 @@ editor_options:
     - & and (vector)
     - | or (vector)
     - xor(x,y) either x or y needs to be true
+    
+02-20-2024
+  - skewness (mean - observation)^3
+    - positive skew = right
+    - negative skew = left
+  - kurtosis (mean - observation)^4, frequency of outliers --> more extreme values, higher kurtosis
+  - discrete distributions (counting a certain number of events): poisson, binomial, negative binomial
+  - continuous distributions: uniform (2 bounds), normal (unbounded), gamma (1 bound, 0), beta (2 bounds, 0 and 1)
+  - functions in r and their prefixes (also need parameters given with them!)
+    - density function: probability of a certain point of a distribution "d"
+    - cumulative function: the summed area of a certain distribution "p"
+    - inverse of p "q"
+    - "r" generate random values from a statistical distribution
+  - p(data|parameter) what will our data look like given known parameters
+  - p(parameter|data) what is the prob of the parameter given the data we have
