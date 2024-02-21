@@ -1,0 +1,169 @@
+---
+title: "Homework 6"
+author: "Gwen Ellis"
+date: "2024-02-21"
+output: html_document
+---
+
+```{r, echo=FALSE, include=FALSE}
+library(ggplot2) # for graphics
+library(MASS) # for maximum likelihood estimation
+library(dplyr)
+library(gridExtra) # more graphics
+```
+
+# Mammal BMR data set
+Data is from Phylogeny and metabolic scaling in mammals (2010) Capellini et al.
+
+### read in data and clean it
+```{r,warning = FALSE, message = FALSE} 
+mammal_df <- read.csv("mammal_bmr.csv", sep=",", comment.char='#')
+str(mammal_df)
+mammal_df$BMR <- mammal_df$BMR..mlO2.hour. # copying BMR column to a new column
+mammal_df[(mammal_df$BMR == -9999),] = NA # fix weird method for assigning missing values
+mammal_df <- na.omit(mammal_df)
+summary(mammal_df$BMR) # maximum BMR is ~51,000
+mammal_df <- mammal_df %>% 
+  mutate(BMR=log(BMR..mlO2.hour.)) # log transformation the BMRs
+sum(mammal_df$BMR > 8) # only 30 samples (out of 580) are larger than 10^8 so I'm going to filter those out since it makes the data very hard to view (long tail)
+mammal_df <- mammal_df %>% 
+  filter(BMR <= 8)
+
+```
+
+### plot data
+```{r, warning = FALSE, message = FALSE}
+p1 <- ggplot(data=mammal_df, aes(x=BMR, y=..density..)) +
+  xlim(0,9) +
+  geom_histogram(color="grey60",fill="dodgerblue3",size=0.2) +
+  theme(panel.background=element_rect(fill = "aliceblue"))
+print(p1)
+```
+
+### Add empirical density curve
+```{r, warning = FALSE, message = FALSE}
+p1 <-  p1 +  geom_density(linetype="dotted",size=0.75)
+print(p1)
+```
+
+### Get maximum likelihood parameters for a normal distribution
+```{r, warning = FALSE, message = FALSE}
+normPars <- fitdistr(mammal_df$BMR,"normal")
+print(normPars)
+ #      mean          sd    
+ #  4.71494765   1.32549513 
+ # (0.05651930) (0.03996518)
+str(normPars)
+normPars$estimate["mean"] # note structure of getting a named attribute
+# 4.714948
+```
+
+### plot the normal distribution probability density
+```{r, warning = FALSE, message = FALSE}
+meanML <- normPars$estimate["mean"]
+sdML <- normPars$estimate["sd"]
+
+xval <- seq(0,max(mammal_df$BMR),len=length(mammal_df$BMR))
+
+ stat <- stat_function(aes(x = xval, y = ..y..), fun = dnorm, colour="red", n = length(mammal_df$BMR), args = list(mean = meanML, sd = sdML))
+ p1 + stat
+
+```
+Normal distribution doesn't look awful, but this dataset has no zeroes so the normal distribution appears skewed right
+
+### Plot exponential probability density
+```{r, warning = FALSE, message = FALSE}
+expoPars <- fitdistr(mammal_df$BMR,"exponential")
+rateML <- expoPars$estimate["rate"]
+
+stat2 <- stat_function(aes(x = xval, y = ..y..), fun = dexp, colour="orange2", n = length(mammal_df$BMR), args = list(rate=rateML))
+ p1 + stat + stat2
+ 
+```
+This looks even worse than a normal distribution.
+
+### Plot uniform probability density
+```{r, warning = FALSE, message = FALSE}
+stat3 <- stat_function(aes(x = xval, y = ..y..), fun = dunif, colour="green4", n = length(mammal_df$BMR), args = list(min=min(mammal_df$BMR), max=max(mammal_df$BMR)))
+ p1 + stat + stat2 + stat3
+ 
+```
+The data is definitely not uniform
+
+### Plot gamma probability density
+```{r, warning = FALSE, message = FALSE}
+gammaPars <- fitdistr(mammal_df$BMR,"gamma")
+shapeML <- gammaPars$estimate["shape"]
+rateML <- gammaPars$estimate["rate"]
+
+stat4 <- stat_function(aes(x = xval, y = ..y..), fun = dgamma, colour="hotpink3", n = length(mammal_df$BMR), args = list(shape=shapeML, rate=rateML))
+ p1 + stat + stat2 + stat3 + stat4
+```
+
+Since a gamma distribution is basically a zero bounded normal distribution, this fits pretty well to the data
+
+### Plot beta probability density
+```{r, warning = FALSE, message = FALSE}
+pSpecial <- ggplot(data=mammal_df, aes(x=BMR/(max(BMR + 0.1)), y=..density..)) +
+  geom_histogram(color="grey60",fill="dodgerblue3",size=0.2) + 
+   theme(panel.background=element_rect(fill = "aliceblue")) +
+  xlim(c(0,1)) +
+  geom_density(size=0.75,linetype="dotted")
+
+betaPars <- fitdistr(x=mammal_df$BMR/max(mammal_df$BMR + 0.1),start=list(shape1=1,shape2=2),"beta")
+shape1ML <- betaPars$estimate["shape1"]
+shape2ML <- betaPars$estimate["shape2"]
+
+statSpecial <- stat_function(aes(x = xval, y = ..y..), fun = dbeta, colour="orchid", n = length(mammal_df$BMR), args = list(shape1=shape1ML,shape2=shape2ML))
+pSpecial + statSpecial
+
+```
+
+Beta distribution requires rescaling the data to be bounded by 0 and 1, but otherwise this fits the observed probability distribution pretty well, but I don't think as well as the gamma distribution
+
+Based on the above graphs, I think that the gamma distribution fits the data best. This makes sense since the data is on BMR of mammals which have to be above zero and are also limited by the mammal's size. This data set might be slightly skewed towards mammals with lower BMR.
+
+
+# Using simulated data
+```{r, warning = FALSE, message = FALSE}
+# Get maximum likelihood parameters for a gamma distribution
+gammaPars <- fitdistr(mammal_df$BMR,"gamma")
+print(gammaPars)
+ #     shape         rate   
+ #  12.6297495    2.6787878 
+ # ( 0.7517515) ( 0.1626546)
+str(gammaPars)
+sim_shape <- gammaPars$estimate["shape"] # 12.6297495
+sim_rate <- gammaPars$estimate["rate"] # 2.678788
+
+sim_gamma <- data.frame(rgamma(n=length(mammal_df$BMR), shape=sim_shape, rate=sim_rate)) 
+sim_gamma$BMR <- sim_gamma$rgamma.n...length.mammal_df.BMR...shape...sim_shape..rate...sim_rate. # add new column
+
+p2 <- ggplot(data=sim_gamma, aes(x=BMR, y=..density..)) + 
+  xlim(0,9) +
+  theme(panel.background=element_rect(fill = "aliceblue")) +
+  geom_histogram(color="grey60",fill="lightblue",size=0.2) # new histrogram from simulated data
+
+p2 <-  p2 + geom_density(linetype="dotted",size=0.75) # add density curve
+print(p2)
+
+sim_stat <- stat_function(aes(x = xval, y = ..y..), fun = dgamma, colour="hotpink3", n = length(sim_gamma$BMR), args = list(shape=sim_shape, rate=sim_rate))
+ p2 + sim_stat
+
+
+```
+
+
+# comparing data to simulated data
+```{r, warning = FALSE, message = FALSE, echo=FALSE}
+grid.arrange(p1 + stat4, p2 + sim_stat, ncol=2)
+
+```
+
+I think the simulated data does fit the observed data pretty well. However, the observed data is not as nicely bell shaped like the simulated data tries to make it. However, the observed data might have bias in it and the simulated data looks more like you'd expect. For example, there are 19 different mammal orders included in the data set. If we look at two of them, Carnivoria which tend to be relatively larger and have a lower BMR, and Rodentia which tend to be smaller and have a higher BMR, there are 10x more rodent species included in this data set than Carnivoria species.
+```{r}
+length(unique(mammal_df$Order))
+sum(mammal_df$Order == "Carnivora")
+sum(mammal_df$Order == "Rodentia")
+```
+

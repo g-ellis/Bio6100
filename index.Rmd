@@ -17,3 +17,5 @@ The fourth homework assignment is [here](Homework/Homework4.html)
 
 Here is the [fifth homework assignment](Homework/Homework5.html)
 
+Sixth homework on probability distributions is [here](Homework/Homework6.html)
+

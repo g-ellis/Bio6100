@@ -71,7 +71,7 @@ editor_options:
     - negative skew = left
   - kurtosis (mean - observation)^4, frequency of outliers --> more extreme values, higher kurtosis
   - discrete distributions (counting a certain number of events): poisson, binomial, negative binomial
-  - continuous distributions: uniform (2 bounds), normal (unbounded), gamma (1 bound, 0), beta (2 bounds, 0 and 1)
+  - continuous distributions: uniform (2 bounds), normal (unbounded), gamma (1 bound, 0; good for over time distributions), beta (2 bounds, 0 and 1; changes shaped based on parameters)
   - functions in r and their prefixes (also need parameters given with them!)
     - density function: probability of a certain point of a distribution "d"
     - cumulative function: the summed area of a certain distribution "p"
