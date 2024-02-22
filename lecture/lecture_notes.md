@@ -79,3 +79,7 @@ editor_options:
     - "r" generate random values from a statistical distribution
   - p(data|parameter) what will our data look like given known parameters
   - p(parameter|data) what is the prob of the parameter given the data we have
+  
+  
+02-22-2024
+  - 

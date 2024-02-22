@@ -1,0 +1,5 @@
+"ID","Treatment","Biomass","Notes","newVar"
+1,"Control",30.3,"",0.886256953468546
+2,"HighN",13,"",0.2416137161199
+3,"HighN",NA,"broken scale",0.75509765278548
+4,"Control",35.4,"",0.74243677011691
