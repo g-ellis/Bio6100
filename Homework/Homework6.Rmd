@@ -160,7 +160,7 @@ grid.arrange(p1 + stat4, p2 + sim_stat, ncol=2)
 
 ```
 
-I think the simulated data does fit the observed data pretty well. However, the observed data is not as nicely bell shaped like the simulated data tries to make it. However, the observed data might have bias in it and the simulated data looks more like you'd expect. For example, there are 19 different mammal orders included in the data set. If we look at two of them, Carnivoria which tend to be relatively larger and have a lower BMR, and Rodentia which tend to be smaller and have a higher BMR, there are 10x more rodent species included in this data set than Carnivoria species.
+I think the simulated data does fit the observed data pretty well. However, the observed data is not as nicely bell shaped like the simulated data tries to make it. The observed data might have bias in it and the simulated data looks more like you'd expect. For example, there are 19 different mammal orders included in the data set. If we look at two of them, Carnivoria which tend to be relatively larger and have a lower BMR, and Rodentia which tend to be smaller and have a higher BMR, there are 10x more rodent species included in this data set than Carnivoria species which could cause the wider range of high BMR species.
 ```{r}
 length(unique(mammal_df$Order))
 sum(mammal_df$Order == "Carnivora")
