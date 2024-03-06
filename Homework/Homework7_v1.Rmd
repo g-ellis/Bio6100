@@ -293,7 +293,7 @@ if (aov_list[9] < 0.05) {
 ```
 
 
-# Changing the number of alleles (n)
+# Changing the number of loci (n)
 ```{r, message=FALSE, warning=FALSE}
 set.seed(13)
 # Distribution parameters
