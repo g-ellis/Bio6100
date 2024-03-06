@@ -81,5 +81,22 @@ editor_options:
   - p(parameter|data) what is the prob of the parameter given the data we have
   
   
-02-22-2024
-  - 
+02-29-2024
+  - anatomy of a function
+  - using { to signify a start of a single line of code, aka the function body, and then have } at the end after the optional return statement
+  - can call other functions, create new functions, and define local variables within a function
+    - functionName <- function(parameterx=defaultx,parametery=defaulty){
+    return(singleObject)
+    }
+  - Stylistic conventions for writing functions:
+    - use prominnent hash character fencing at start and finish
+    - give a header through annotation with function name, description, and inputs and outputs 
+    - names inside a function can be fairly short and generic
+    - functions should be short and simple, break it into multiple if it starts to get too long
+    - provide default values for all function arguments
+    - ideally use random numbers as default values for rapid testing
+  - global variables are visible to all parts of the code; declared in the main body of the script
+  - local variables are visible only within a function; declared in the function or passed to the function through parameters
+  - advised to not use global variables within a function even though it can "see" them
+  
+  

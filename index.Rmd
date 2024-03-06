@@ -19,3 +19,5 @@ Here is the [fifth homework assignment](Homework/Homework5.html)
 
 Sixth homework on probability distributions is [here](Homework/Homework6.html)
 
+Seventh homewor assignment using probability distributions to simulate data is [here](Homework/Homework7_v1.html)
+

@@ -1,0 +1,164 @@
+---
+title: "Homework7"
+author: "Gwen Ellis"
+date: "2024-03-04"
+output: html_document
+---
+
+### libraries
+```{r}
+library(ggplot2)
+library(MASS)
+library(tidyverse)
+```
+
+
+
+For this homework, I am simulating allele frequencies for an adaptive trait at a single locus for n number of populations to see if there is a continuous relationship between allele frequency and the mean temperature of the warmest month (WorldClim BIO10) to see if there is local adaptation at this locus. In this case, I will be tracking the minor allele frequency where the minor allele is the adaptive one. This means that we expect the average allele frequency to be relatively low (10-20%). This number will be bounded by zero and 0.05 as it is still being considered the minor allele. From this homework, I expect that there will be a linear relationship between temperature and allele frequency.
+
+## Trial 1, default values
+```{r, message=FALSE, warning=FALSE}
+n=100 # number of populations
+
+# simulate allele frequencies for an adaptive trait at a single locus across 100 populations
+allele_freq <- sort(rbeta(n=n, shape1=5, shape2=50))
+qplot(x=allele_freq, xlim=c(0,1), color=I("black"), fill=I("cornflowerblue")) # checking how the distribution looks
+print(mean(allele_freq))
+print(var(allele_freq))
+
+# shape1 (alpha) is similar to minor allele occurrence 
+# shape2 (beta) is similar to major allele occurrence
+# beta probability distribution will give minor allele frequency for the populations)
+# mean is alpha/(alpha+beta)
+# variance is approximate to how wide the distribution is and magnitude of shape1 and shape2
+
+# simulate temperatures for 100 populations (this won't change)
+set.seed(10)
+temperature <- sort(runif(n=n, min=15, max=35)) # some hot temperatures, some cold, but average is ~25C
+# mean = shape * scale
+# variance = shape * scale^2
+qplot(x=temperature, color=I("black"), fill=I("cornflowerblue"))
+
+id <- c(1:n) # column with individual IDs
+
+dist_df <- data.frame(id, temperature, allele_freq) # putting together the dataframe
+
+df_lm <- lm(allele_freq~temperature, data=dist_df) # linear model for the data
+print(summary(df_lm))
+lm_list <- unlist(summary(df_lm))
+model_sig <- list(intercept=lm_list$coefficients1, slope=lm_list$coefficients2, intercept_p=lm_list$coefficients7, slope_p=lm_list$coefficients8, r_sq=lm_list$r.squared)
+print(model_sig)
+
+sim_plot <- ggplot(data=dist_df, aes(x=temperature,y=allele_freq)) +
+  xlim(15,35) +
+  ylim(0,0.5) +
+  geom_point() + 
+  stat_smooth(method=lm, level=0.90) # default level=0.95 
+print(sim_plot)
+
+```
+
+
+
+
+## Trial 2, default values - How does the simulated data change?
+```{r, message=FALSE, warning=FALSE}
+n=100 
+
+allele_freq <- sort(rbeta(n=n, shape1=5, shape2=50))
+qplot(x=allele_freq, xlim=c(0,1), color=I("black"), fill=I("cornflowerblue")) 
+print(mean(allele_freq))
+print(var(allele_freq))
+
+set.seed(10)
+temperature <- sort(runif(n=n, min=15, max=35)) 
+qplot(x=temperature, color=I("black"), fill=I("cornflowerblue"))
+
+id <- c(1:n) 
+
+dist_df <- data.frame(id, temperature, allele_freq)
+
+df_lm <- lm(allele_freq~temperature, data=dist_df) 
+print(summary(df_lm))
+lm_list <- unlist(summary(df_lm))
+model_sig <- list(intercept=lm_list$coefficients1, slope=lm_list$coefficients2, intercept_p=lm_list$coefficients7, slope_p=lm_list$coefficients8, r_sq=lm_list$r.squared)
+print(model_sig)
+
+sim_plot <- ggplot(data=dist_df, aes(x=temperature,y=allele_freq)) +
+  xlim(15,35) +
+  ylim(0,0.5) +
+  geom_point() + 
+  stat_smooth(method=lm, level=0.90) 
+print(sim_plot)
+
+```
+
+
+## Adjusting the mean 
+The best way to adjust the mean for a beta distribution in this case is to increase/decrease shape1
+```{r}
+allele_freq <- sort(rbeta(n=n, shape1=20, shape2=50)) # changing from 5 to 20
+qplot(x=allele_freq, xlim=c(0,1), color=I("black"), fill=I("cornflowerblue")) 
+print(mean(allele_freq)) # The mean allele frequency is now much higher
+print(var(allele_freq))
+
+set.seed(10)
+temperature <- sort(runif(n=n, min=15, max=35)) 
+qplot(x=temperature, color=I("black"), fill=I("cornflowerblue"))
+
+id <- c(1:n) 
+
+dist_df <- data.frame(id, temperature, allele_freq)
+
+df_lm <- lm(allele_freq~temperature, data=dist_df) 
+print(summary(df_lm))
+lm_list <- unlist(summary(df_lm))
+model_sig <- list(intercept=lm_list$coefficients1, slope=lm_list$coefficients2, intercept_p=lm_list$coefficients7, slope_p=lm_list$coefficients8, r_sq=lm_list$r.squared)
+print(model_sig) 
+
+sim_plot <- ggplot(data=dist_df, aes(x=temperature,y=allele_freq)) +
+  xlim(15,35) +
+  ylim(0,0.5) +
+  geom_point() + 
+  stat_smooth(method=lm, level=0.90) 
+print(sim_plot)
+
+```
+
+## Adjusting the variance
+When just adjusting the variance, the relationship between temperature and allele frequency is maintained but just shifted. To break the relationship between these two variables, the variance in allele frequencies has to be increased. The best way to do this for a beta distribution is to dramatically decrease the magnitude of both shape parameters.
+```{r}
+allele_freq <- sort(rbeta(n=n, shape1=5, shape2=10)) # decreased from original by 1 order of magnitude
+qplot(x=allele_freq, xlim=c(0,1), color=I("black"), fill=I("cornflowerblue")) 
+print(mean(allele_freq)) # The mean allele frequency is now much higher
+print(var(allele_freq))
+
+set.seed(10)
+temperature <- sort(runif(n=n, min=15, max=35)) 
+qplot(x=temperature, color=I("black"), fill=I("cornflowerblue"))
+
+id <- c(1:n) 
+
+dist_df <- data.frame(id, temperature, allele_freq)
+
+df_lm <- lm(allele_freq~temperature, data=dist_df) 
+print(summary(df_lm))
+lm_list <- unlist(summary(df_lm))
+model_sig <- list(intercept=lm_list$coefficients1, slope=lm_list$coefficients2, intercept_p=lm_list$coefficients7, slope_p=lm_list$coefficients8, r_sq=lm_list$r.squared)
+print(model_sig) 
+
+sim_plot <- ggplot(data=dist_df, aes(x=temperature,y=allele_freq)) +
+  xlim(15,35) +
+  ylim(0,0.5) +
+  geom_point() + 
+  stat_smooth(method=lm, level=0.90) 
+print(sim_plot)
+```
+
+
+
+
+
+
+
+

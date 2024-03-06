@@ -1,0 +1,359 @@
+---
+title: "Homework 7"
+author: "Gwen Ellis"
+date: "2024-03-01"
+output: html_document
+---
+
+```{r, include=FALSE}
+# packages
+library(ggplot2)
+library(MASS)
+library(tidyverse)
+library(gridExtra)
+```
+
+
+# Simulating allele frequencies with a beta simulation
+
+Scenario: In a previous GWAS, several loci were implicated in thermal tolerance resulting in different allele frequencies for the SNPs in different populations with different environments through local adaptation. These same loci are now being assessed in three new populations to see if the pattern of local adaptation holds true. The expectation is that the population in the warmest environment ("hot") will have an average higher allele frequency across all loci in comparison to the "warm" and "cold" environment populations.
+Goal: ANOVA for average allele frequencies across the loci in 3 populations
+
+For this homework, I am simulating allele frequencies for an adaptive trait at n number of loci using a beta distribution. In this case, I will be tracking the minor allele frequency where the minor allele is the adaptive one. This means that we expect the average allele frequency to be relatively low (~5-10%). This number will be bounded by zero and 0.05 as it is still being considered the minor allele. In this simulation, shape1 is similar to how many times we see the minor allele and shape2 is similar to how many times we see the major allele. For a beta distribution, the mean = shape1/(shape1 + shape2) and the variance is proportional to the magnitude of the two parameters. A larger magnitude results in less variance and smaller magnitudes result in more variance. For this simulation, there should be a very small mean (0.05 - 0.15) and relatively low variance as most of the loci should have similar allele frequencies.
+
+## TRIAL 1 - First set of allele frequency distributions with random numbers from beta distribution 
+```{r, message=FALSE, warning=FALSE}
+# beta distribution (has to be bounded by 0 and 1 because they're allele frequencies), number of loci = 100, mean will be based on thermal tolerance
+
+popname <- c("cold","warm","hot") # population names
+n_loci <- 100 # number of loci, how polygenic is the trait
+shape1_pops <- c(2,3,5) # shape1 for beta distribution
+shape2_pops <- c(50,50,50) # shape2 for beta distribution
+names(shape1_pops) <- popname
+names(shape2_pops) <- popname
+
+set.seed(3)
+# allele frequency distributions for each population
+cold_freq <- rbeta(n=n_loci, shape1=shape1_pops["cold"], shape2=shape2_pops["cold"]) 
+warm_freq <- rbeta(n=n_loci, shape1=shape1_pops["warm"], shape2=shape2_pops["warm"])
+hot_freq <- rbeta(n=n_loci, shape1=shape1_pops["hot"], shape2=shape2_pops["hot"])
+
+# plot the allele frequencies for each population
+cold_plot <- qplot(x=cold_freq, xlim=c(0,1), ylim=c(0,50),
+                   color=I("black"), fill=I("cornflowerblue"),
+                   main="Cold population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+warm_plot <- qplot(x=warm_freq, xlim=c(0,1),ylim=c(0,50),
+                   color=I("black"), fill=I("goldenrod1"),
+                   main="Warm population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+hot_plot <- qplot(x=hot_freq, xlim=c(0,1), ylim=c(0,50),
+                  color=I("black"), fill=I("tomato"),
+                  main="Hot population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+grid.arrange(cold_plot, warm_plot, hot_plot)
+
+allele_freq <- c(cold_freq, warm_freq, hot_freq) # compile the allele frequencies
+id <- 1:(sum(n_loci))
+temp <- rep(popname, each=n_loci) # to make a column with all the populations
+aov_df <- data.frame(id, temp, allele_freq) # put the id, pop temp, and allele frequencies into one df
+
+# what are the average allele frequencies for each population?
+avg_freq <- list(mean(cold_freq), mean(warm_freq), mean(hot_freq))
+names(avg_freq) <- popname
+print(avg_freq) 
+
+# run the ANOVA
+aov_mod <- aov(allele_freq~temp, data=aov_df) 
+print(summary(aov_mod))
+aov_list <- unlist(summary(aov_mod))
+aov_summary <- list(F_value=aov_list[7], P_value=aov_list[9])
+
+
+# making a graph, are there significant differences in allele frequency between the populations?
+aov_df$temp <- factor(aov_df$temp , levels=c("cold", "warm", "hot"))
+anova_plot1 <- ggplot(data=aov_df,aes(x=temp,y=allele_freq,fill=temp)) +
+  scale_fill_manual(values=c("cornflowerblue", "goldenrod1", "tomato")) +
+  geom_boxplot()
+print(anova_plot1)
+
+#Is the difference in allele frequency between the populations significant?
+if (aov_list[9] < 0.05) {
+  return("YES")
+} else {
+  return("NO")
+}
+
+```
+
+## TRIAL 2 - Different set of random numbers from beta distribution
+```{r, message=FALSE, warning=FALSE}
+
+# Distribution parameters
+n_loci <- 100 
+shape1_pops <- c(2,3,5) 
+shape2_pops <- c(50,50,50) 
+names(shape1_pops) <- popname
+names(shape2_pops) <- popname
+
+set.seed(7)
+# allele frequency distributions for each population
+cold_freq <- rbeta(n=n_loci, shape1=shape1_pops["cold"], shape2=shape2_pops["cold"]) 
+warm_freq <- rbeta(n=n_loci, shape1=shape1_pops["warm"], shape2=shape2_pops["warm"])
+hot_freq <- rbeta(n=n_loci, shape1=shape1_pops["hot"], shape2=shape2_pops["hot"])
+
+# plot the allele frequencies for each population
+cold_plot <- qplot(x=cold_freq, xlim=c(0,1), ylim=c(0,50),
+                   color=I("black"), fill=I("cornflowerblue"),
+                   main="Cold population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+warm_plot <- qplot(x=warm_freq, xlim=c(0,1),ylim=c(0,50),
+                   color=I("black"), fill=I("goldenrod1"),
+                   main="Warm population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+hot_plot <- qplot(x=hot_freq, xlim=c(0,1), ylim=c(0,50),
+                  color=I("black"), fill=I("tomato"),
+                  main="Hot population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+grid.arrange(cold_plot, warm_plot, hot_plot)
+
+# df set up
+allele_freq <- c(cold_freq, warm_freq, hot_freq) 
+id <- 1:(sum(n_loci))
+temp <- rep(popname, each=n_loci) 
+aov_df <- data.frame(id, temp, allele_freq) 
+
+# what are the average allele frequencies for each population?
+avg_freq <- list(mean(cold_freq), mean(warm_freq), mean(hot_freq))
+names(avg_freq) <- popname
+print(avg_freq) 
+
+# ANOVA
+aov_mod <- aov(allele_freq~temp, data=aov_df) 
+print(summary(aov_mod))
+aov_list <- unlist(summary(aov_mod))
+aov_summary <- list(F_value=aov_list[7], P_value=aov_list[9])
+
+# Boxplot
+aov_df$temp <- factor(aov_df$temp , levels=c("cold", "warm", "hot"))
+anova_plot1 <- ggplot(data=aov_df,aes(x=temp,y=allele_freq,fill=temp)) +
+  scale_fill_manual(values=c("cornflowerblue", "goldenrod1", "tomato")) +
+  geom_boxplot()
+print(anova_plot1)
+
+#Is the difference in allele frequency between the populations significant?
+if (aov_list[9] < 0.05) {
+  return("YES")
+} else {
+  return("NO")
+}
+
+```
+
+## Changing the mean - not significant
+```{r, message=FALSE, warning=FALSE}
+
+# Distribution parameters
+n_loci <- 100 
+shape1_pops <- c(2,2,2) # if all populations have the same "count" of the minor allele, the means will be almost identical
+shape2_pops <- c(50,50,50) 
+names(shape1_pops) <- popname
+names(shape2_pops) <- popname
+
+set.seed(8)
+# allele frequency distributions for each population
+cold_freq <- rbeta(n=n_loci, shape1=shape1_pops["cold"], shape2=shape2_pops["cold"]) 
+warm_freq <- rbeta(n=n_loci, shape1=shape1_pops["warm"], shape2=shape2_pops["warm"])
+hot_freq <- rbeta(n=n_loci, shape1=shape1_pops["hot"], shape2=shape2_pops["hot"])
+
+# plot the allele frequencies for each population
+cold_plot <- qplot(x=cold_freq, xlim=c(0,1), ylim=c(0,50),
+                   color=I("black"), fill=I("cornflowerblue"),
+                   main="Cold population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+warm_plot <- qplot(x=warm_freq, xlim=c(0,1),ylim=c(0,50),
+                   color=I("black"), fill=I("goldenrod1"),
+                   main="Warm population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+hot_plot <- qplot(x=hot_freq, xlim=c(0,1), ylim=c(0,50),
+                  color=I("black"), fill=I("tomato"),
+                  main="Hot population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+grid.arrange(cold_plot, warm_plot, hot_plot)
+
+# df set up
+allele_freq <- c(cold_freq, warm_freq, hot_freq) 
+id <- 1:(sum(n_loci))
+temp <- rep(popname, each=n_loci) 
+aov_df <- data.frame(id, temp, allele_freq) 
+
+# what are the average allele frequencies for each population?
+avg_freq <- list(mean(cold_freq), mean(warm_freq), mean(hot_freq))
+names(avg_freq) <- popname
+print(avg_freq) 
+
+# ANOVA
+aov_mod <- aov(allele_freq~temp, data=aov_df) 
+print(summary(aov_mod))
+aov_list <- unlist(summary(aov_mod))
+aov_summary <- list(F_value=aov_list[7], P_value=aov_list[9])
+
+# Boxplot
+aov_df$temp <- factor(aov_df$temp , levels=c("cold", "warm", "hot"))
+anova_plot1 <- ggplot(data=aov_df,aes(x=temp,y=allele_freq,fill=temp)) +
+  scale_fill_manual(values=c("cornflowerblue", "goldenrod1", "tomato")) +
+  geom_boxplot()
+print(anova_plot1)
+
+#Is the difference in allele frequency between the populations significant?
+if (aov_list[9] < 0.05) {
+  return("YES")
+} else {
+  return("NO")
+}
+
+```
+
+
+
+## Changing the mean - just barely significant
+```{r, message=FALSE, warning=FALSE}
+
+# Distribution parameters
+n_loci <- 100 
+shape1_pops <- c(1.3,1.5,1.9) # At this low magnitude, the values have to be very close together
+shape2_pops <- c(50,50,50) 
+names(shape1_pops) <- popname
+names(shape2_pops) <- popname
+
+set.seed(9)
+# allele frequency distributions for each population
+cold_freq <- rbeta(n=n_loci, shape1=shape1_pops["cold"], shape2=shape2_pops["cold"]) 
+warm_freq <- rbeta(n=n_loci, shape1=shape1_pops["warm"], shape2=shape2_pops["warm"])
+hot_freq <- rbeta(n=n_loci, shape1=shape1_pops["hot"], shape2=shape2_pops["hot"])
+
+# plot the allele frequencies for each population
+cold_plot <- qplot(x=cold_freq, xlim=c(0,1), ylim=c(0,50),
+                   color=I("black"), fill=I("cornflowerblue"),
+                   main="Cold population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+warm_plot <- qplot(x=warm_freq, xlim=c(0,1),ylim=c(0,50),
+                   color=I("black"), fill=I("goldenrod1"),
+                   main="Warm population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+hot_plot <- qplot(x=hot_freq, xlim=c(0,1), ylim=c(0,50),
+                  color=I("black"), fill=I("tomato"),
+                  main="Hot population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+grid.arrange(cold_plot, warm_plot, hot_plot)
+
+# df set up
+allele_freq <- c(cold_freq, warm_freq, hot_freq) 
+id <- 1:(sum(n_loci))
+temp <- rep(popname, each=n_loci) 
+aov_df <- data.frame(id, temp, allele_freq) 
+
+# what are the average allele frequencies for each population?
+avg_freq <- list(mean(cold_freq), mean(warm_freq), mean(hot_freq))
+names(avg_freq) <- popname
+print(avg_freq) 
+
+# ANOVA
+aov_mod <- aov(allele_freq~temp, data=aov_df) 
+print(summary(aov_mod))
+aov_list <- unlist(summary(aov_mod))
+aov_summary <- list(F_value=aov_list[7], P_value=aov_list[9])
+
+# Boxplot
+aov_df$temp <- factor(aov_df$temp , levels=c("cold", "warm", "hot"))
+anova_plot1 <- ggplot(data=aov_df,aes(x=temp,y=allele_freq,fill=temp)) +
+  scale_fill_manual(values=c("cornflowerblue", "goldenrod1", "tomato")) +
+  geom_boxplot()
+print(anova_plot1)
+
+#Is the difference in allele frequency between the populations significant?
+if (aov_list[9] < 0.05) {
+  return("YES")
+} else {
+  return("NO")
+}
+
+```
+
+
+# Changing the number of alleles (n)
+```{r, message=FALSE, warning=FALSE}
+set.seed(13)
+# Distribution parameters
+n_loci <- 5 # need very few loci to start seeing insignificant difference
+shape1_pops <- c(2,3,5) # 
+shape2_pops <- c(50,50,50) 
+names(shape1_pops) <- popname
+names(shape2_pops) <- popname
+
+# allele frequency distributions for each population
+cold_freq <- rbeta(n=n_loci, shape1=shape1_pops["cold"], shape2=shape2_pops["cold"]) 
+warm_freq <- rbeta(n=n_loci, shape1=shape1_pops["warm"], shape2=shape2_pops["warm"])
+hot_freq <- rbeta(n=n_loci, shape1=shape1_pops["hot"], shape2=shape2_pops["hot"])
+
+# plot the allele frequencies for each population
+cold_plot <- qplot(x=cold_freq, xlim=c(0,1), ylim=c(0,50),
+                   color=I("black"), fill=I("cornflowerblue"),
+                   main="Cold population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+warm_plot <- qplot(x=warm_freq, xlim=c(0,1),ylim=c(0,50),
+                   color=I("black"), fill=I("goldenrod1"),
+                   main="Warm population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+hot_plot <- qplot(x=hot_freq, xlim=c(0,1), ylim=c(0,50),
+                  color=I("black"), fill=I("tomato"),
+                  main="Hot population allele frequencies",
+                   ylab="Number of loci",
+                   xlab="Allele frequency")
+grid.arrange(cold_plot, warm_plot, hot_plot)
+
+# df set up
+allele_freq <- c(cold_freq, warm_freq, hot_freq) 
+id <- 1:(sum(n_loci))
+temp <- rep(popname, each=n_loci) 
+aov_df <- data.frame(id, temp, allele_freq) 
+
+# what are the average allele frequencies for each population?
+avg_freq <- list(mean(cold_freq), mean(warm_freq), mean(hot_freq))
+names(avg_freq) <- popname
+print(avg_freq) 
+
+# ANOVA
+aov_mod <- aov(allele_freq~temp, data=aov_df) 
+print(summary(aov_mod))
+aov_list <- unlist(summary(aov_mod))
+aov_summary <- list(F_value=aov_list[7], P_value=aov_list[9])
+
+# Boxplot
+aov_df$temp <- factor(aov_df$temp , levels=c("cold", "warm", "hot"))
+anova_plot1 <- ggplot(data=aov_df,aes(x=temp,y=allele_freq,fill=temp)) +
+  scale_fill_manual(values=c("cornflowerblue", "goldenrod1", "tomato")) +
+  geom_boxplot()
+print(anova_plot1)
+
+#Is the difference in allele frequency between the populations significant?
+if (aov_list[9] < 0.05) {
+  return("YES")
+} else {
+  return("NO")
+}
+```

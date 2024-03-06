@@ -156,7 +156,7 @@ qplot(rgamma(n=100, shape=2, scale=100), color=I("black"), fill=I("goldenrod"))
 # bounded at 0 and 1
 # similar to a binomial but the result is continuous rather than discrete
 # parameter shape1 = similar to number of successes +1
-# parameter shape1 = similar to number of failures +1
+# parameter shape2 = similar to number of failures +1
 
 # shape1=1, shape2=1, basically no data
 my_beta <- rbeta(n=1000, shape1=1, shape2=1)
