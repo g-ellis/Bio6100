@@ -12,7 +12,7 @@ data("iris")
 ```
 
 
-Question 1
+## Question 1
 ```{r}
 str(iris)
 # 150 observations and 5 variables
@@ -20,7 +20,7 @@ str(iris)
 ```
 
 
-Question 2
+## Question 2
 ```{r}
 iris1 <- iris %>% 
   filter(Species == c("virginica", "versicolor"), Sepal.Length > 6.0, Sepal.Width > 2.5)
@@ -29,7 +29,7 @@ str(iris1)
 # 28 observations and 5 variables
 ```
 
-Question 3
+## Question 3
 ```{r}
 iris2 <- iris1 %>%
   select(Species, Sepal.Length, Sepal.Width)
@@ -38,7 +38,7 @@ str(iris2)
 # 28 observations and 3 variables
 ```
 
-Question 4
+## Question 4
 ```{r}
 iris3 <- iris2 %>% 
   arrange(by=desc(Sepal.Length))
@@ -47,7 +47,7 @@ print(head(iris3), 6)
 
 ```
 
-Question 5
+## Question 5
 ```{r}
 iris4 <- iris3 %>% 
   mutate(Sepal.Area = Sepal.Length*Sepal.Width)
@@ -56,7 +56,7 @@ str(iris4)
 # 28 observations and 4 variables
 ```
 
-Question 6
+## Question 6
 ```{r}
 iris5 <- c(avg_sepal.length = mean(iris4$Sepal.Length), avg_sepal.width = mean(iris4$Sepal.Width), avg_sepal.area = mean(iris4$Sepal.Area))
 
@@ -64,7 +64,7 @@ print(iris5)
 
 ```
 
-Question 7
+## Question 7
 ```{r}
 iris6 <- iris4 %>% 
   group_by(Species) %>%
@@ -73,7 +73,7 @@ iris6 <- iris4 %>%
 print(iris6)
 ```
 
-Question 8
+## Question 8
 ```{r}
 irisFinal <- iris %>% 
   filter(Species == c("virginica", "versicolor"), Sepal.Length > 6.0, Sepal.Width > 2.5) %>% 
@@ -83,7 +83,7 @@ irisFinal <- iris %>%
 
 ```
 
-Question 9
+## Question 9
 ```{r}
 iris <- iris %>% 
   mutate(ID = 1:length(iris$Sepal.Length))
