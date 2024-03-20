@@ -99,4 +99,5 @@ editor_options:
   - local variables are visible only within a function; declared in the function or passed to the function through parameters
   - advised to not use global variables within a function even though it can "see" them
   
-  
+2024-03-20
+  - SQL: structured query language, useful for storing and processing large datasets
