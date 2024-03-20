@@ -21,3 +21,5 @@ This is the webpage for my Bio 6100 class
 
 [Homework 7](Homework/Homework7_v1.html) - Using probability distributions to simulate a dataset 
 
+[Homework 8](Homework/Homework8.html) - Working with dplyr to wrangle datasets 
+
