@@ -101,3 +101,12 @@ editor_options:
   
 2024-03-20
   - SQL: structured query language, useful for storing and processing large datasets
+  
+2024-03-21
+  - best practice for "for" loops in R is to avoid c, cbind, rbind, and list since they change the size of the data you're working with
+  - anatomy of a for loop:
+  for (var in seq) { 
+  body of loop
+  }
+    - where var is a counter variable that holds the current value of the loop and seq is an integer/character vector that defines the start and end of the loop
+    - usually i , j, or k is used as the var
