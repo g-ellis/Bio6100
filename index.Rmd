@@ -23,3 +23,5 @@ This is the webpage for my Bio 6100 class
 
 [Homework 8](Homework/Homework8.html) - Working with dplyr to wrangle datasets 
 
+[Homework 9](Homework/Homework9.html) - Making functions and using structured programming
+

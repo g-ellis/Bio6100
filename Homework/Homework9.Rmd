@@ -1,0 +1,127 @@
+---
+title: "Homework 9"
+author: "Gwen Ellis"
+date: "2024-03-27"
+output: html_document
+---
+
+```{r, include=FALSE}
+
+library(gridExtra)
+library(ggplot2)
+```
+
+
+```{r, include=FALSE}
+
+###########################################################################
+# function: get_allele.freq
+# calculates allele frequencies for multiple loci for multiple populations
+# input: pops is a vector of population names
+#     n is the number of loci to analyze
+#     shape_1 is a vector of shape1 parameters for a beta distribution
+#     shape_2 is a vector of shape2 parameters for a beta distribution
+# output: a data frame of allele frequencies
+# -------------------------------------------------------
+get_allele.freq <- function(pops=popname, n=n_loci, shape1=shape1_pops, shape2=shape2_pops) {
+  freq1 <- rbeta(n, shape1_pops[1], shape2_pops[1]) 
+  freq2 <- rbeta(n, shape1_pops[2], shape2_pops[2])
+  freq3 <- rbeta(n, shape1_pops[3], shape2_pops[3])
+  allele_freq <- c(freq1, freq2, freq3)
+  id <- 1:(sum(n))
+  population <- rep(pops, each=n)
+  aov_df <- data.frame(id, population, allele_freq)
+  return(aov_df)
+}
+###########################################################################
+
+
+
+
+
+
+###########################################################################
+# function: freq_aov
+# runs and ANOVA to determine statistical significance for difference in average allele frequency
+# input: x is a data frame of allele frequencies for different populations
+# output:  a list that contains the F value and p-value for the ANOVA
+# -------------------------------------------------------
+freq_aov <- function(x=NULL) {
+  aov_results <- aov(allele_freq~population, data=x)
+  aov_list <- unlist(summary(aov_results))
+  aov_summary <- c(F_value=aov_list[[7]], P_value=aov_list[[9]])
+ print(aov_summary)
+  if (aov_summary[2] < 0.05) {
+    cat("\n", "difference in average allele frequency is significant")
+  } else cat("\n","difference in average allele frequency is not significant")
+}
+###########################################################################
+
+
+
+
+###########################################################################
+# function: freq_plot
+# plot allele frequency distributions and average allele frequency boxplot
+# required packages: gridExtra, ggplot2
+# input: x is a data frame of allele frequencies for different populations
+# output: graphs!
+# -------------------------------------------------------
+freq_plot <- function(x=NULL) {
+  freq1_plot <- ggplot(data=x[x$population==unique(x$population)[1],2:3]) + 
+    aes(x=allele_freq,  color=I("black"), fill=I("cornflowerblue")) + 
+    geom_histogram() +
+    xlim(0,1) + 
+    ylim(0,60) +
+    labs(y="Number of loci", x="Allele frequency") +
+    ggtitle(paste("Population", unique(x$population)[1], "allele frequencies"))
+  
+  freq2_plot <- ggplot(data=x[x$population==unique(x$population)[2],2:3]) + 
+    aes(x=allele_freq,  color=I("black"), fill=I("goldenrod1")) + 
+    geom_histogram() +
+    xlim(0,1) + 
+    ylim(0,60) +
+    labs(y="Number of loci", x="Allele frequency") +
+    ggtitle(paste("Population", unique(x$population)[2], "allele frequencies"))
+  
+  freq3_plot <- ggplot(data=x[x$population==unique(x$population)[3],2:3]) + 
+    aes(x=allele_freq,  color=I("black"), fill=I("tomato")) + 
+    geom_histogram() +
+    xlim(0,1) + 
+    ylim(0,60) +
+    labs(y="Number of loci", x="Allele frequency") +
+    ggtitle(paste("Population", unique(x$population)[3], "allele frequencies"))
+
+  x$population <- factor(x$population , levels=c(unique(x$population)))
+  box_plot1 <- ggplot(data=x,aes(x=population,y=allele_freq,fill=population)) +
+    scale_fill_manual(values=c("cornflowerblue", "goldenrod1", "tomato")) +
+    geom_boxplot() +
+    labs(y="avg. allele frequency")
+    
+  grid.arrange(freq1_plot, freq2_plot, freq3_plot, box_plot1)
+}
+###########################################################################
+
+
+
+```
+
+
+
+```{r, message=FALSE, warning=FALSE}
+## global variables ##
+popname <- c("cool","mild","warm") # population names
+n_loci <- 100 # number of loci 
+shape1_pops <- c(2,3,5) # shape1 for beta distribution
+shape2_pops <- c(50,50,50) # shape2 for beta distribution
+
+# simulate data
+test1 <- get_allele.freq(popname, n_loci, shape1_pops, shape2_pops)
+
+# statistical test
+freq_aov(x=test1)
+
+# plots
+freq_plot(x=test1)
+```
+
