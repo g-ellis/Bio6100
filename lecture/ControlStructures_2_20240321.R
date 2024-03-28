@@ -296,11 +296,26 @@ for (i in 1:length(c_pars)) {
     model_frame[model_frame$c==c_pars[i] & model_frame$z==z_pars[j], "S"] <- sac(A=area, c=c_pars[i], z=z_pars[j])
   }
 }
-model_frame
+print(model_frame)
 
 # probably an easier way to do it
-for (i in 1:nrow(nodel_frame)) {
+for (i in 1:nrow(model_frame)) {
   model_frame[i, "S"] <- sac(A=model_frame$A[i],
                              c=model_frame$c[i],
                              z=model_frame$z[i])
 }
+print(model_frame)
+
+
+p1 <- ggplot(data=model_frame)
+p1 + geom_line(mapping=aes(x=A, y=S)) +
+  facet_grid(c~z)
+
+# looking at the data another way
+p2 <- p1
+p2 + geom_line(mapping=aes(x=A, y=S, group=z)) +
+  facet_grid(.~c) # column arrangement
+
+p3 <- p1
+p3 + geom_line(mapping=aes(x=A, y=S, group=c)) +
+  facet_grid(z~.) # row arrangement
