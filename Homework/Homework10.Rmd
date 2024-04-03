@@ -99,19 +99,19 @@ plot1 <- ggplot(df2, aes(x=group1)) +
   geom_histogram(color="black", fill="cornflowerblue") +
   geom_vline(xintercept=c(mean(df2$group1)), linetype="dashed", color="orange") +
   xlim(0,5) +
-  ggtitle(paste("For group 1, average mean is", round(mean(df2$group1), digits=3),", specified mean is 1"))
+  ggtitle(paste0("For group 1, average mean is ", round(mean(df2$group1), digits=3),", specified mean is 1"))
   
 plot2 <- ggplot(df2, aes(x=group2)) +
   geom_histogram(color="black", fill="lightblue") +
   geom_vline(xintercept=c(mean(df2$group2)), linetype="dashed", color="orange") +
   xlim(0,5) +
-  ggtitle(paste("For group 2, average mean is", round(mean(df2$group2), digits=3),", specified mean is 2"))
+  ggtitle(paste0("For group 2, average mean is ", round(mean(df2$group2), digits=3),", specified mean is 2"))
 
 plot3 <- ggplot(df2, aes(x=group3)) +
   geom_histogram(color="black", fill="lavender") +
   geom_vline(xintercept=c(mean(df2$group3)), linetype="dashed", color="orange") +
   xlim(0,5) +
-  ggtitle(paste("For group 3, average mean is", round(mean(df2$group3), digits=3),", specified mean is 3"))
+  ggtitle(paste0("For group 3, average mean is ", round(mean(df2$group3), digits=3),", specified mean is 3"))
 
 grid.arrange(plot1, plot2, plot3)
 # The mean for these 100 randomizations isn't always the specified mean. Can see how the vertical line isn't always at the specified mean
