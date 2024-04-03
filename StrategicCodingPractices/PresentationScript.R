@@ -120,12 +120,12 @@ restored_x <- readRDS(file="DataObjects/x.rds") # reopen to new name
 
 y <- rnorm(3)
 z <- pi
-bundle <- list(x,y,z) # save multiple objects in a single list
+bundle <- list(x=x,y=y,z=z) # save multiple objects in a single list
 saveRDS(object=bundle,
         file="DataObjects/bundle.rds") 
 restored_bundle <- readRDS(file="DataObjects/bundle.rds")
-restored_bundle$y # reference named list items
-restored_bundle[[3]] # reference content of item number in a list
+restored_bundle$y # reference named list items, but if its not explicitly named it doesn't work
+restored_bundle[[3]] # reference content of item number in a list by positiob
 ## 1.8 Markdown ----
 
 # Use this folder to store .Rmd markdown scripts, local image files they may call, and markdown outputs (html, pdf files) 
@@ -159,7 +159,7 @@ l('end of loop')
 for (k in 1:100) {
   show_progress_bar(k)
   Sys.sleep(0.075)
-  # if(k==52)print(ghost) # this throws an error!
+   if(k==52)print(ghost) # this throws an error!
 }
 l('end of loop with error')
 
@@ -191,9 +191,9 @@ build_function("fit_regression") # creates an R script template for the function
 source("Functions/FitRegression.R") # sources that script to load function in memory
 
 ## 3.2 punctuation conventions for names ----
-# snake_case
-# camelCase
-# PascalCase
+# snake_case for functions
+# camelCase for file/script names
+# PascalCase for file/script names
 # kebab-case
 # SCREAMING_SNAKE_CASE
 
@@ -242,7 +242,7 @@ build_function(c("select_recipes",
                  "clean_up"))
 
 # Step 4: Source all function templates as a batch operation
-source_batch("Functions")
+source_batch("Functions") # source everything from Functions folder, custom function (not base R)
 
 # Step 5: Run each function template
 select_recipes()

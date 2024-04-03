@@ -110,3 +110,6 @@ editor_options:
   }
     - where var is a counter variable that holds the current value of the loop and seq is an integer/character vector that defines the start and end of the loop
     - usually i , j, or k is used as the var
+    
+    
+    

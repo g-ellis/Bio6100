@@ -4,9 +4,23 @@ R version: R version 4.3.2 (2023-10-31)
 platform: aarch64-apple-darwin20 (64-bit)
 running: macOS Ventura 13.4
 #----------------------
-random number seed: 272629760
-timestamp: Thu Mar 28 14:23:54 2024
+random number seed: -681574400
+timestamp: Tue Apr  2 13:18:25 2024
 #----------------------
 libraries loaded:
 dplyr forcats ggmosaic ggplot2 log4r lubridate pracma purrr readr stringr TeachingDemos tibble tidyr tidyverse
 #######################
+INFO  [02-Apr 13:42:43] 
+INFO  [02-Apr 13:43:15] this message only shows in the log file
+.........10.........20.........30.........40.........50.........60.........70.........80.........90.........100
+INFO  [02-Apr 13:45:30] end of loop
+.........10.........20.........30.........40.........50.........60.........70.........80.........90.........100.........10.........20.........30.........40.........50..
+INFO  [02-Apr 13:46:08] end of loop with error
+.........50.........100.........150.........200.........250.........300.........350.........400.........450.........500.........550.........600.........650.........700.........750.........800.........850.........900.........950.........1000
+INFO  [02-Apr 13:47:12] end of long loop
+.........10
+INFO  [02-Apr 13:47:37] end of timed loop
+INFO  [02-Apr 13:47:56] 35.1469999999999
+.........10
+INFO  [02-Apr 13:51:14] 10.4560000000001
+INFO  [02-Apr 13:51:22] end of timed loop

@@ -1,0 +1,119 @@
+---
+title: "Homework 10"
+author: "Gwen Ellis"
+date: "2024-04-03"
+output: html_document
+---
+
+
+```{r, include=FALSE}
+library(ggplot2)
+library(gridExtra)
+```
+
+
+### Question 1 - count number of zeroes with a for loop
+```{r}
+vector <- rbinom(n=20, size=0:5, prob=0.5)
+counter <- 0
+
+# as a for loop
+for (i in seq_along(vector)) {
+  if (vector[i]==0) {
+    counter <- counter+1 }
+}
+print(counter)
+
+```
+
+### Question 2 - count number of zeroes with subsetting
+```{r}
+
+length(vector[vector==0])
+```
+
+
+### Question 3 - make_matrix function
+```{r}
+
+##############
+# function: make_matrix
+# makes a matrix with where values are row x column
+# input: n_row is number of rows desired
+#        n_col is number of columns desired
+# output: a matrix with number of rows = n_row and number of columns = n_col and each position equals row number x column number
+#---------
+make_matrix <- function(n_row=runif(1, 1, 10), n_col=runif(1, 1, 10)) {
+  new_matrix <- matrix(nrow=n_row, ncol=n_col)
+  for (i in 1:nrow(new_matrix)) {
+    for (j in 1:ncol(new_matrix)) {
+      new_matrix[i,j] <- i*j
+    }
+  }
+  print(new_matrix)
+}
+#####################
+
+make_matrix()
+```
+
+
+### Question 4 - Randomization test
+```{r, warning=FALSE, message=FALSE}
+
+names <- c("group1", "group2", "group3")
+var1 <- rnorm(n=10,mean=1)
+var2 <- rnorm(n=10,mean=2)
+var3 <- rnorm(n=10,mean=3)
+df <- data.frame(group=rep(names, each=length(var1)), response_var=c(var1, var2, var3))
+
+###############
+# function: shuffle_means
+# rerun three normal distributions with given observations and means, sd=1
+# input: n_obs number of observations
+#   means is  vector of means to use 
+# output: a vector with the means of each group
+#----------
+shuffle_means <- function(n_obs=10, means=c(1,2,3)) {
+  v1 <- rnorm(n=n_obs,mean=means[1])
+  v2 <- rnorm(n=n_obs,mean=means[2])
+  v3 <- rnorm(n=n_obs,mean=means[3])
+  averages <- c(mean(v1), mean(v2), mean(v3))
+  return(averages)
+}
+#####################
+
+# testing the function
+shuffle_means()
+
+# repeat the function 100 times and put it into a dataframe
+df2 <- data.frame(replicate=NULL, group1=NULL, group2=NULL, group3=NULL)
+for (i in 1:100) {
+  new_data <- shuffle_means()
+  df2 <- rbind(df2, list(replicate=i, group1=new_data[1], group2=new_data[2], group3=new_data[3]))
+}
+  
+
+# graphing the results
+plot1 <- ggplot(df2, aes(x=group1)) +
+  geom_histogram(color="black", fill="cornflowerblue") +
+  geom_vline(xintercept=c(mean(df2$group1)), linetype="dashed", color="orange") +
+  xlim(0,5) +
+  ggtitle(paste("For group 1, average mean is", round(mean(df2$group1), digits=3),", specified mean is 1"))
+  
+plot2 <- ggplot(df2, aes(x=group2)) +
+  geom_histogram(color="black", fill="lightblue") +
+  geom_vline(xintercept=c(mean(df2$group2)), linetype="dashed", color="orange") +
+  xlim(0,5) +
+  ggtitle(paste("For group 2, average mean is", round(mean(df2$group2), digits=3),", specified mean is 2"))
+
+plot3 <- ggplot(df2, aes(x=group3)) +
+  geom_histogram(color="black", fill="lavender") +
+  geom_vline(xintercept=c(mean(df2$group3)), linetype="dashed", color="orange") +
+  xlim(0,5) +
+  ggtitle(paste("For group 3, average mean is", round(mean(df2$group3), digits=3),", specified mean is 3"))
+
+grid.arrange(plot1, plot2, plot3)
+# The mean for these 100 randomizations isn't always the specified mean. Can see how the vertical line isn't always at the specified mean
+```
+
