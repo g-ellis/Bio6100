@@ -70,6 +70,43 @@ ggplot(data=d) + aes(x=fl, y=cty, fill=fl) + # color based on fuel type, adds a 
   geom_boxplot()
 
 
+# bar plot (long format)
+ggplot(data=d) + aes(x=fl) +
+  geom_bar(fill="thistle", color="black")
+
+
+# bar plot w/ specified values (geom_col)
+x_treatment <- c("contol", "low", "high")
+y_response <- c(12,2.5,22.9)
+summary_data <- data.frame(x_treatment, y_response)
+
+ggplot(data=summary_data) + aes(x=x_treatment, y=y_response) +
+  geom_col(fill=c("grey50", "goldenrod","goldenrod"), col="black")
+
+
+
+# Basic curves and functions -----
+my_vec <- seq(1,100, by=0.1)
+
+# simple mathematical functions
+d_frame <- data.frame(x=my_vec, y=sin(my_vec))
+ggplot(data=d_frame) + aes(x=x, y=y) +
+  geom_line()
+
+
+# probability functions
+d_frame <- data.frame(x=my_vec, y=dgamma(my_vec, shape=5, scale=3))
+ggplot(data=d_frame) + aes(x=x, y=y) +
+  geom_line()
+
+
+# user-defined functions
+my_fun <- function(x) sin(x) + 0.1*x
+d_frame <- data.frame(x=my_vec, y=my_fun(my_vec))
+ggplot(data=d_frame) + aes(x=x, y=y) +
+  geom_line()
+
+
 
 # Theme and fonts ----
 # default is just okay, let's change it!
@@ -110,3 +147,5 @@ p3 <- ggplot(data=d) + aes(x=displ, y=cty) +
        x="x axis label",
        y="y axis label") +
   xlim(0,4) + ylim(0,20)
+
+
