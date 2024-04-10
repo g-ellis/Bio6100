@@ -27,7 +27,7 @@ initiate_seed()
 set_up_log()
 
 # 1. Folder creation ----
-add_folder()
+# add_folder()
 
 
 # 2. Gather list of needed files ----
@@ -54,7 +54,7 @@ for (i in seq_along(years)) {
 # calc.richness()
 
 # batch make function templates:
-build_function(c("Clean.data","Extract.year","Calc.abundance","Calc.richness"))
+# build_function(c("Clean.data","Extract.year","Calc.abundance","Calc.richness"))
 
 # write the functions
 
