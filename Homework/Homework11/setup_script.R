@@ -70,7 +70,7 @@ source("Functions/Calc.richness.R")
 df <- data.frame(File=NULL, Year=NULL, Abundance=NULL, Richness=NULL)
 
 
-# Batch process to fill data frame ----
+# 5. Batch process to fill data frame ----
 for (i in seq_along(file_list)) {
   clean.data(path=file_list[i])
 }
