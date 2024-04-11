@@ -111,5 +111,5 @@ editor_options:
     - where var is a counter variable that holds the current value of the loop and seq is an integer/character vector that defines the start and end of the loop
     - usually i , j, or k is used as the var
     
-    
-    
+2024-04-11
+  - in ggplot aesthetics, color refers to one dimensional shapes (points, lines) and fill refers to two-dimensional shapes (boxplots, bars, confidence intervals)

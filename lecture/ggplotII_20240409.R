@@ -126,7 +126,85 @@ m1 <- ggplot(data=d) + aes(x=displ, y=cty, color=drv) +
   geom_smooth(method="lm")
 
 
-# facet variables for more effectibr groupings
+# facet variables for more effective groupings
 m1 <- ggplot(data=d) + aes(x=displ, y=cty) +
   geom_point()
-m1 + facet_grid(class~fl)
+m1 + facet_grid(class~fl) # row ~ column
+m1 + facet_grid(fl~class)
+
+m1 + facet_grid(class~fl, scales="free_y") # default is the same scale for all aspects, but can change that
+m1 + facet_grid(class~fl, scales="free")
+
+m1 + facet_grid(.~class) # add just one facet dimension
+m1 + facet_grid(class~.) 
+
+m1 + facet_wrap(~class) # wrapping individual plots instead of forcing them into a grid
+
+m1 + facet_wrap(~class + fl)
+
+m1 + facet_wrap(~class + fl, drop=FALSE) # now includes "empty" graphs
+
+m1 <- ggplot(data=d) + aes(x=displ, y=cty, color=drv) + 
+  geom_point()
+m1 + facet_grid(.~class) # aes from original ggplot carries over
+
+m1 <- ggplot(data=d) + aes(x=displ, y=cty, color=drv) + 
+  geom_smooth(se=FALSE, method="lm") # only show the regression line
+m1 + facet_grid(.~class)
+
+# continuous variables and boxplots
+m1 <- ggplot(data=d) + aes(x=displ, y=cty) +
+  geom_boxplot()
+m1 + facet_grid(.~class)
+
+m1 <- ggplot(data=d) + aes(x=displ, y=cty, fill=drv) + 
+  geom_boxplot()
+m1 + facet_grid(.~class)
+
+
+
+## mapping aesthetics within geoms
+
+# standard plot
+p1 <- ggplot(data=d) + aes(x=displ, y=hwy) +
+  geom_point() + 
+  geom_smooth()
+
+# break out the drive types and apply geoms to each
+p1 <- ggplot(data=d) + aes(x=displ, y=hwy, group=drv) +
+  geom_point() + 
+  geom_smooth()
+
+# a better way to do the above since now the points are colored by drv
+p1 <- ggplot(data=d) + aes(x=displ, y=hwy, color=drv) +
+  geom_point() + 
+  geom_smooth()
+p1 <- ggplot(data=d) + aes(x=displ, y=hwy, fill=drv) +
+  geom_point() + 
+  geom_smooth()
+p1 <- ggplot(data=d) + aes(x=displ, y=hwy, color=drv, fill=drv) +
+  geom_point() + 
+  geom_smooth()
+
+# can manipulate data within geoms
+p1 <- ggplot(data=d) + aes(x=displ, y=hwy, color=drv) + 
+  geom_point(data=d[d$drv=="4",]) +
+  geom_smooth()
+
+# or instead of subsetting, just map an aesthetic within geom
+p1 <- ggplot(data=d) + aes(x=displ, y=hwy) +
+  geom_point(aes(color=drv)) + # only coloring points
+  geom_smooth() # this still inherits base aes
+p1 <- ggplot(data=d) + aes(x=displ, y=hwy) +
+  geom_point(aes(color=drv)) + # only coloring points
+  geom_smooth(color="black")
+
+# conversely, map the smooth but not the points
+p1 <- ggplot(data=d) + aes(x=displ, y=hwy) +
+  geom_point() + 
+  geom_smooth(aes(color=drv))
+
+# subset data in the base layer
+p1 <- ggplot(data=d[d$drv!="4",]) + aes(x=displ, y=hwy) +
+  geom_point(aes(color=drv)) +
+  geom_smooth()
