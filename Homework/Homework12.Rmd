@@ -1,0 +1,38 @@
+---
+title: "Homework 12"
+author: "Gwen Ellis"
+date: "2024-04-17"
+output: html_document
+---
+
+```{r, include=FALSE}
+## packages
+
+library(ggplot2)
+library(ggthemes)
+library(patchwork)
+library(dplyr)
+library(ggsignif)
+
+```
+
+
+```{r}
+d <- PlantGrowth
+
+colors <- c("#E9F4FF", "#f4d1c8", "#FFAD90")
+ggplot(data=d) + aes(x=group, y=weight, fill=group) +
+  geom_violin() +
+  geom_point(position=position_jitter(width=0.05, height=0.05), color="grey20", size=2, alpha=0.5) +
+  scale_fill_manual(labels= c("Control", "Treatment 1", "Treatment 2"), values=colors) +
+  ylim(c(0,10)) +
+  labs(x="Treatment group", y="Dried biomass (g)", title="Plant growth under different treatments") +
+  scale_x_discrete(labels=c("Control", "Treatment 1", "Treatment 2")) +
+  theme_linedraw(base_size=15, base_family="Times") +
+  theme(legend.position="none") +
+  geom_signif(comparisons = list(c("ctrl", "trt1"), c("ctrl", "trt2")), 
+              map_signif_level=TRUE)
+
+
+```
+
