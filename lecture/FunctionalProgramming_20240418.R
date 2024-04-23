@@ -143,3 +143,100 @@ z <- tapply(X=df2$x,
        INDEX=df2$treatment,
        FUN= function(x) sd(x)/mean(x))
 print(z)
+
+
+
+## Fourth task: replicate a stochastic process
+
+
+######################
+# function: pop_gen
+# generate a stochastic population track of varying length
+# input: number of time steps
+# output: population track
+#----------------------
+pop_gen <- function(z=sample.int(n=10, size=1)) {
+  n <- runif(z)
+  return(n)
+}
+###################
+pop_gen()
+
+# for loop solution
+n_reps <- 20
+list_out <- vector("list", n_reps)
+for (i in seq_len(n_reps)) {
+  list_out[[i]] <- pop_gen()
+}
+head(list_out)
+
+
+# replicate solution
+# replicate(n, expr)
+# n is the number of times the operation is to be repeated
+# expr is the function (base or user-defined), or an expression (like an anonymous function, but without the function(x) header; just the bare code for execution)
+
+z_out <- replicate(n=5,
+                   expr=pop_gen())
+print(z_out)
+
+
+
+## Fifth task: sweep a function with all parameter combinations
+
+# using species area function, S=cA^z
+a_pars <- 1:10
+c_pars <- c(100,150,125)
+z_pars <- c(0.1, 0.16, 0.26, 0.3)
+df <- expand.grid(a=a_pars, c=c_pars, z=z_pars)
+head(df)
+df_out <- cbind(df, s=NA)
+
+
+# for loop solution
+for (i in seq_len(nrow(df_out))) {
+  df_out$s[i] <- df$c[i]*(df$a[i]^df$z[i])
+}
+head(df_out)
+
+
+# mapply solution
+# mapply(FUN, ..., MoreArgs)
+# FUN is the function to be used
+# .. arguments to vectorize over (vectors or lists)
+# MoreArgs lists of additional arguments that are constant in all of the different runs
+
+df_out$s <- mapply(FUN=function(a,c,z) c*(a^z), df$a, df$c, df$z)
+head(df_out)
+
+# the correct solution
+df_out$s <- df_out$c*(df_out$a^df_out$z)
+
+
+
+## functions that call functions
+
+my_sum <- function(a,b) a+b
+my_dif <- function(a,b) a-b
+my_mult <- function(a,b) a*b
+
+funct_1 <- function(a=3, b=2) sum(a,b)
+funct_1()
+
+funct_2 <- function(a=3, b=2) my_sum(a,b)
+funct_2()
+
+# each time we want to use a different one of the "my" functions, we have to create a new function to call it
+# now pass data AND another function into a function as parameters
+
+algebra <- function(x=my_sum,a=3,b=2) x(a,b)
+algebra(x=my_sum)
+algebra(x=my_dif)
+algebra(x=my_mult)
+algebra(x=sum) # this works
+algebra(x=mean) # but this doesn't work
+
+# don't do it the way below
+# clumsy_function(func_name=="my_sum") {
+#   if(func_name==my_sum) my_sum() else
+#     if(func_name==my_dif) ...
