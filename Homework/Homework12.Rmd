@@ -17,8 +17,10 @@ library(ggsignif)
 ```
 
 
-```{r}
+```{r, warning=FALSE}
 d <- PlantGrowth
+
+d$weight[d$group=="trt2"] <- d$weight[d$group=="trt2"]*1.2
 
 colors <- c("#E9F4FF", "#f4d1c8", "#FFAD90")
 ggplot(data=d) + aes(x=group, y=weight, fill=group) +
@@ -30,7 +32,10 @@ ggplot(data=d) + aes(x=group, y=weight, fill=group) +
   scale_x_discrete(labels=c("Control", "Treatment 1", "Treatment 2")) +
   theme_linedraw(base_size=15, base_family="Times") +
   theme(legend.position="none") +
-  geom_signif(comparisons = list(c("ctrl", "trt1"), c("ctrl", "trt2")), 
+  geom_signif(comparisons = list(c("ctrl", "trt2")), 
+              map_signif_level=TRUE,
+              y_position = 9) +
+   geom_signif(comparisons = list(c("ctrl", "trt1")), 
               map_signif_level=TRUE)
 
 
